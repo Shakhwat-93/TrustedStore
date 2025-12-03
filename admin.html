@@ -7,286 +7,233 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #F3F4F6; }
         .theme-bg { background-color: #006D5B; }
         .theme-text { color: #006D5B; }
         .sidebar-link.active { background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid white; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #006D5B; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #006D5B; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .product-checkbox { transform: scale(1.3); accent-color: #006D5B; cursor: pointer; }
+        .selected-card { border: 2px solid #006D5B !important; background-color: #f0fdfa !important; }
+        /* SweetAlert Customization */
+        .swal2-popup { font-family: 'Hind Siliguri', sans-serif; border-radius: 15px; }
     </style>
 </head>
 <body class="text-gray-800 h-screen overflow-hidden flex">
-
     <aside class="w-64 theme-bg text-white hidden md:flex flex-col shadow-2xl z-20">
-        <div class="p-6 flex items-center gap-3 border-b border-white/10">
-            <h1 class="text-xl font-bold">অ্যাডমিন প্যানেল</h1>
-        </div>
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold">অ্যাডমিন প্যানেল</h1></div>
         <nav class="flex-1 p-4 space-y-2 mt-4">
-            <a href="#" onclick="showSection('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
-                <i class="fas fa-chart-pie w-5"></i> ড্যাশবোর্ড
-            </a>
-            <a href="#" onclick="showSection('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
-                <i class="fas fa-shopping-cart w-5"></i> অর্ডার সমূহ
-            </a>
-            <a href="#" onclick="showSection('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
-                <i class="fas fa-box-open w-5"></i> প্রোডাক্ট কন্ট্রোল
-            </a>
+            <a href="#" onclick="showSection('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-chart-pie"></i> ড্যাশবোর্ড</a>
+            <a href="#" onclick="showSection('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-shopping-cart"></i> অর্ডার</a>
+            <a href="#" onclick="showSection('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-box-open"></i> প্রোডাক্ট</a>
         </nav>
-        <div class="p-4 border-t border-white/10">
-            <a href="index.html" target="_blank" class="flex items-center justify-center bg-white/20 py-2 rounded-lg text-sm font-bold">ওয়েবসাইট দেখুন</a>
-        </div>
     </aside>
-
-    <main class="flex-1 flex flex-col h-full relative">
-        <header class="bg-white shadow-sm h-16 flex items-center px-6 z-10 justify-between">
-            <h2 class="text-xl font-bold theme-text" id="page-title">ড্যাশবোর্ড ওভারভিউ</h2>
-            <div class="md:hidden">
-                <button onclick="document.querySelector('aside').classList.toggle('hidden')" class="text-gray-600"><i class="fas fa-bars text-xl"></i></button>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50">
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+        <header class="bg-white shadow-sm h-16 flex items-center px-6 z-10 justify-between"><h2 class="text-xl font-bold theme-text" id="page-title">ড্যাশবোর্ড</h2></header>
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 relative">
             
-            <div id="dashboard-section" class="space-y-8">
+            <div id="dashboard-section" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm font-bold">মোট বিক্রি</p>
-                            <h3 class="text-3xl font-bold theme-text mt-1" id="total-sales">৳0</h3>
-                        </div>
-                        <div class="w-14 h-14 bg-green-100 text-[#006D5B] rounded-full flex items-center justify-center text-2xl"><i class="fas fa-coins"></i></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm font-bold">মোট অর্ডার</p>
-                            <h3 class="text-3xl font-bold text-gray-800 mt-1" id="total-orders">0</h3>
-                        </div>
-                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-shopping-bag"></i></div>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm font-bold">মোট প্রোডাক্ট</p>
-                            <h3 class="text-3xl font-bold text-purple-600 mt-1" id="total-products-count">0</h3>
-                        </div>
-                        <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-box"></i></div>
-                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border flex justify-between"><div><p class="text-gray-500 font-bold">মোট বিক্রি</p><h3 class="text-3xl font-bold theme-text" id="total-sales">৳0</h3></div><div class="w-12 h-12 bg-green-100 text-[#006D5B] rounded-full flex items-center justify-center text-xl"><i class="fas fa-coins"></i></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border flex justify-between"><div><p class="text-gray-500 font-bold">মোট অর্ডার</p><h3 class="text-3xl font-bold" id="total-orders">0</h3></div><div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-shopping-bag"></i></div></div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border flex justify-between"><div><p class="text-gray-500 font-bold">মোট প্রোডাক্ট</p><h3 class="text-3xl font-bold text-purple-600" id="total-products-count">0</h3></div><div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-box"></i></div></div>
                 </div>
             </div>
 
-            <div id="orders-section" class="hidden">
-                <div class="bg-white rounded-2xl shadow-sm p-6">
-                    <div class="flex justify-between mb-4">
-                        <h3 class="font-bold text-lg">অর্ডার লিস্ট</h3>
-                        <button onclick="fetchOrders()" class="text-sm border px-4 py-2 rounded hover:bg-gray-100"><i class="fas fa-sync-alt"></i> রিফ্রেশ</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-gray-100 text-sm uppercase">
-                                <tr>
-                                    <th class="p-3">তারিখ</th>
-                                    <th class="p-3">নাম</th>
-                                    <th class="p-3">ফোন</th>
-                                    <th class="p-3">অর্ডার</th>
-                                    <th class="p-3">বিল</th>
-                                </tr>
-                            </thead>
-                            <tbody id="order-table-body" class="text-sm text-gray-700"></tbody>
-                        </table>
-                        <div id="order-loader" class="py-10 text-center hidden"><div class="loader"></div></div>
-                    </div>
-                </div>
+            <div id="orders-section" class="hidden space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between gap-4"><input type="text" id="orderSearchInput" onkeyup="searchOrders()" placeholder="অর্ডার খুঁজুন..." class="w-full border rounded-lg p-2"><button onclick="fetchOrders()" class="bg-gray-100 px-4 rounded-lg">রিফ্রেশ</button></div>
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden"><table class="w-full text-left"><tbody id="order-table-body"></tbody></table><div id="order-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div></div>
             </div>
 
-            <div id="products-section" class="hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-xl">প্রোডাক্ট লিস্ট</h3>
-                    <button onclick="uploadProduct()" class="theme-bg text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-[#005a4b] transition flex items-center gap-2">
-                        <i class="fas fa-plus-circle"></i> নতুন পণ্য যোগ করুন
-                    </button>
+            <div id="products-section" class="hidden space-y-6 pb-24">
+                <div class="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border sticky top-0 z-20">
+                    <input type="text" id="productSearchInput" onkeyup="searchProducts()" placeholder="পণ্য খুঁজুন..." class="w-full border rounded-lg p-2">
+                    <button onclick="toggleSelectAll()" id="selectAllBtn" class="whitespace-nowrap px-4 border rounded-lg hover:bg-gray-100">সব সিলেক্ট</button>
+                    <button onclick="uploadProduct()" class="theme-bg text-white px-5 rounded-lg font-bold">নতুন পণ্য</button>
                 </div>
-                <div id="product-loader" class="py-10 text-center hidden"><div class="loader"></div></div>
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="admin-product-list"></div>
+                <div id="product-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="admin-product-list"></div>
+                <div id="bulk-action-bar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-6 translate-y-32 transition-transform">
+                    <span class="font-bold"><span id="selected-count">0</span> সিলেক্টেড</span>
+                    <button onclick="bulkDelete()" class="bg-red-500 hover:bg-red-600 px-4 py-1 rounded-full font-bold">ডিলিট</button>
+                    <button onclick="clearSelection()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                </div>
             </div>
-
         </div>
     </main>
 
     <script>
-        // ==========================================
-        // আপনার নতুন URL
-        // ==========================================
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwzAFmcBJZNoii1G7pQZ2lPFBRQ-vRgdm872Wx9ilAyv5Q6GitmG9XufQJl_zlmxCRb/exec';
+        let allOrders = [], allProducts = [], selectedProductIds = new Set();
 
-        // নেভিগেশন
-        function showSection(sectionId) {
+        function showSection(id) {
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
-            if(activeLink) activeLink.classList.add('active');
-            
-            document.getElementById('dashboard-section').classList.add('hidden');
-            document.getElementById('orders-section').classList.add('hidden');
-            document.getElementById('products-section').classList.add('hidden');
-            document.getElementById(sectionId + '-section').classList.remove('hidden');
-
-            const titles = { 'dashboard': 'ড্যাশবোর্ড', 'orders': 'অর্ডার ম্যানেজমেন্ট', 'products': 'প্রোডাক্ট কন্ট্রোল' };
-            document.getElementById('page-title').innerText = titles[sectionId];
-
-            if(sectionId === 'dashboard') { fetchOrders(); fetchProducts(true); }
-            if(sectionId === 'orders') fetchOrders();
-            if(sectionId === 'products') fetchProducts();
+            document.querySelector(`[onclick="showSection('${id}')"]`)?.classList.add('active');
+            ['dashboard', 'orders', 'products'].forEach(s => document.getElementById(s + '-section').classList.add('hidden'));
+            document.getElementById(id + '-section').classList.remove('hidden');
+            document.getElementById('page-title').innerText = id === 'dashboard' ? 'ড্যাশবোর্ড' : (id === 'orders' ? 'অর্ডার' : 'প্রোডাক্ট');
+            if(id === 'dashboard') loadAll(); if(id === 'orders') fetchOrders(); if(id === 'products') fetchProducts();
         }
+        function loadAll() { fetchOrders(); fetchProducts(); }
 
-        // 1. অর্ডার ফেচ করা
+        // Orders Logic
         async function fetchOrders() {
-            const tableBody = document.getElementById('order-table-body');
-            const loader = document.getElementById('order-loader');
-            
-            if(tableBody) tableBody.innerHTML = '';
-            if(loader) loader.classList.remove('hidden');
-
-            try {
-                const response = await fetch(scriptURL); // Default GET returns orders
-                const data = await response.json();
-                
-                if(loader) loader.classList.add('hidden');
-                
-                const orders = data.slice(1).reverse();
-                
-                updateStats(orders);
-
-                if(tableBody) {
-                    if(orders.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">কোনো অর্ডার নেই</td></tr>';
-                    } else {
-                        orders.forEach(row => {
-                            const tr = document.createElement('tr');
-                            tr.className = "border-b hover:bg-gray-50";
-                            tr.innerHTML = `
-                                <td class="p-3">${new Date(row[0]).toLocaleDateString('bn-BD')}</td>
-                                <td class="p-3 font-bold">${row[1]}</td>
-                                <td class="p-3 text-blue-600">${row[2]}</td>
-                                <td class="p-3 text-xs text-gray-600 max-w-xs truncate" title="${row[4]}">${row[4]}</td>
-                                <td class="p-3 font-bold theme-text">৳${row[5]}</td>
-                            `;
-                            tableBody.appendChild(tr);
-                        });
-                    }
+            document.getElementById('order-loader').classList.remove('hidden');
+            try { const res = await fetch(scriptURL); const data = await res.json(); allOrders = data.slice(1).reverse(); renderOrders(allOrders); updateStats(); } 
+            catch(e) { console.error(e); } finally { document.getElementById('order-loader').classList.add('hidden'); }
+        }
+        function renderOrders(d) {
+            const b = document.getElementById('order-table-body'); b.innerHTML = '';
+            if(!d.length) { b.innerHTML = '<tr><td class="p-8 text-center">নেই</td></tr>'; return; }
+            d.forEach(r => {
+                // তারিখ ফিক্স (আগের মতো)
+                let dateStr = r[0]; 
+                const dateObj = new Date(r[0]);
+                if (!isNaN(dateObj.getTime()) && r[0].toString().includes('-')) {
+                    dateStr = dateObj.toLocaleDateString('bn-BD') + ' ' + dateObj.toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'});
                 }
-            } catch (error) {
-                console.error(error);
-                if(loader) loader.innerHTML = '<span class="text-red-500">ডাটা লোড হয়নি!</span>';
-            }
+                b.innerHTML += `<tr class="border-b"><td class="p-4 font-bold text-gray-500 text-xs">${dateStr}</td><td class="p-4 font-bold">${r[1]}<br><span class="text-xs font-normal text-blue-600">${r[2]}</span></td><td class="p-4 text-xs max-w-xs truncate">${r[4]}</td><td class="p-4 font-bold text-right">৳${r[5]}</td></tr>`
+            });
+        }
+        function searchOrders() { const q = document.getElementById('orderSearchInput').value.toLowerCase(); renderOrders(allOrders.filter(r => r[1].toLowerCase().includes(q) || r[2].toString().includes(q))); }
+
+        // Products Logic
+        async function fetchProducts() {
+            document.getElementById('product-loader').classList.remove('hidden'); clearSelection();
+            try { const res = await fetch(scriptURL + '?action=getProducts'); allProducts = await res.json(); renderProducts(allProducts); updateStats(); } 
+            catch(e) { console.error(e); } finally { document.getElementById('product-loader').classList.add('hidden'); }
+        }
+        function renderProducts(p) {
+            const c = document.getElementById('admin-product-list'); c.innerHTML = '';
+            if(!p.length) { c.innerHTML = '<div class="col-span-full text-center py-10">নেই</div>'; return; }
+            p.forEach(x => {
+                const sel = selectedProductIds.has(x.id.toString());
+                const safeName = x.name.replace(/'/g, "\\'");
+                const safeCat = x.category.replace(/'/g, "\\'");
+                c.innerHTML += `
+                    <div id="card-${x.id}" class="bg-white p-3 rounded-xl border relative hover:shadow-md ${sel?'selected-card':''}" onclick="toggle('${x.id}')">
+                        <div class="absolute top-2 right-2"><input type="checkbox" class="product-checkbox" ${sel?'checked':''} onclick="event.stopPropagation(); toggle('${x.id}')"></div>
+                        <img src="${x.img}" class="h-32 w-full object-cover rounded mb-2" onerror="this.src='https://via.placeholder.com/100'">
+                        <h4 class="font-bold text-sm truncate">${x.name}</h4><p class="theme-text font-bold">৳${x.price}</p>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="event.stopPropagation(); editProduct(${x.id}, '${safeName}', '${safeCat}', ${x.price}, '${x.img}')" class="bg-blue-50 text-blue-600 flex-1 py-1 text-xs rounded hover:bg-blue-100">এডিট</button>
+                        </div>
+                    </div>`;
+            });
+            updateBar();
         }
 
-        function updateStats(orders) {
-            document.getElementById('total-orders').innerText = orders.length;
-            let totalSales = 0;
-            orders.forEach(row => totalSales += parseInt(row[5]) || 0);
-            document.getElementById('total-sales').innerText = '৳' + totalSales.toLocaleString();
-        }
-
-        // 2. প্রোডাক্ট ফেচ করা
-        async function fetchProducts(onlyCount = false) {
-            const container = document.getElementById('admin-product-list');
-            const loader = document.getElementById('product-loader');
-            
-            if(!onlyCount) {
-                container.innerHTML = '';
-                loader.classList.remove('hidden');
-            }
-
-            try {
-                const response = await fetch(scriptURL + '?action=getProducts');
-                const products = await response.json();
-                
-                if(loader) loader.classList.add('hidden');
-                document.getElementById('total-products-count').innerText = products.length;
-
-                if (!onlyCount) {
-                    if (products.length === 0) {
-                        container.innerHTML = '<div class="col-span-full text-center text-gray-500">কোনো পণ্য নেই</div>';
-                    } else {
-                        products.forEach(p => {
-                            container.innerHTML += `
-                                <div class="bg-white p-4 rounded-xl shadow-sm border text-center group hover:shadow-md transition">
-                                    <div class="h-32 overflow-hidden rounded-lg mb-3 relative bg-gray-50">
-                                        <img src="${p.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
-                                        <span class="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md uppercase">${p.category}</span>
-                                    </div>
-                                    <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${p.name}</h4>
-                                    <p class="theme-text font-bold text-base mt-1">৳${p.price}</p>
-                                </div>
-                            `;
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-                if(loader) loader.innerHTML = '<span class="text-red-500">প্রোডাক্ট লোড হয়নি!</span>';
-            }
-        }
-
-        // 3. প্রোডাক্ট আপলোড (FIXED)
+        // --- PRODUCT UPLOAD (DESIGN RESTORED) ---
         function uploadProduct() {
             Swal.fire({
-                title: 'নতুন পণ্য আপলোড',
+                title: 'নতুন পণ্য যোগ করুন',
                 html: `
                     <div class="space-y-3 text-left">
-                        <input id="p_name" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="পণ্যের নাম">
-                        <select id="p_cat" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]">
-                            <option value="cosmetics">Cosmetics</option>
-                            <option value="supplements">Supplements</option>
-                            <option value="food">Food</option>
-                            <option value="skincare">Skincare</option>
-                        </select>
-                        <input id="p_price" type="number" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="দাম">
-                        <input id="p_img" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="ছবির লিংক (Direct Link)">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">পণ্যের নাম</label>
+                            <input id="p_name" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="Ex: Ganozhi Soap">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ক্যাটাগরি</label>
+                            <select id="p_cat" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B] bg-white">
+                                <option value="cosmetics">Cosmetics</option>
+                                <option value="supplements">Supplements</option>
+                                <option value="food">Food</option>
+                                <option value="skincare">Skincare</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">দাম (টাকা)</label>
+                            <input id="p_price" type="number" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="Ex: 500">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ছবির লিংক</label>
+                            <input id="p_img" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="Direct Image URL">
+                        </div>
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'আপলোড',
+                confirmButtonText: 'আপলোড করুন',
+                cancelButtonText: 'বাতিল',
                 confirmButtonColor: '#006D5B',
                 preConfirm: () => {
+                    const name = document.getElementById('p_name').value;
+                    const price = document.getElementById('p_price').value;
+                    const img = document.getElementById('p_img').value;
+                    if(!name || !price) { Swal.showValidationMessage('নাম এবং দাম আবশ্যক'); return false; }
                     return {
-                        name: document.getElementById('p_name').value,
+                        action: 'addProduct',
+                        name: name,
                         category: document.getElementById('p_cat').value,
-                        price: document.getElementById('p_price').value,
-                        image: document.getElementById('p_img').value,
-                        action: 'addProduct'
+                        price: price,
+                        image: img
                     };
                 }
             }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({ title: 'অপেক্ষা করুন...', didOpen: () => Swal.showLoading() });
-
-                    // POST Request (NO 'no-cors' here)
-                    fetch(scriptURL, {
-                        method: 'POST',
-                        body: JSON.stringify(result.value)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.result === 'success'){
-                            Swal.fire('সফল!', 'পণ্যটি যুক্ত করা হয়েছে', 'success');
-                            fetchProducts();
-                        } else {
-                            throw new Error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire('এরর!', 'আপলোড হয়নি। সিটে "Products" ট্যাব আছে তো?', 'error');
-                        console.error(error);
-                    });
-                }
+                if(result.isConfirmed) { post(result.value, 'পণ্য যোগ করা হয়েছে!'); }
             });
         }
 
-        // Init
-        fetchOrders();
+        // --- PRODUCT EDIT (DESIGN RESTORED) ---
+        function editProduct(id, oldName, oldCat, oldPrice, oldImg) {
+            Swal.fire({
+                title: 'পণ্য এডিট করুন',
+                html: `
+                    <div class="space-y-3 text-left">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">নাম</label>
+                            <input id="e_name" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" value="${oldName}">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ক্যাটাগরি</label>
+                            <select id="e_cat" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B] bg-white">
+                                <option value="cosmetics" ${oldCat=='cosmetics'?'selected':''}>Cosmetics</option>
+                                <option value="supplements" ${oldCat=='supplements'?'selected':''}>Supplements</option>
+                                <option value="food" ${oldCat=='food'?'selected':''}>Food</option>
+                                <option value="skincare" ${oldCat=='skincare'?'selected':''}>Skincare</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">দাম</label>
+                            <input id="e_price" type="number" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" value="${oldPrice}">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500">ছবি URL</label>
+                            <input id="e_img" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" value="${oldImg}">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'আপডেট করুন',
+                confirmButtonColor: '#006D5B',
+                preConfirm: () => {
+                    return {
+                        action: 'updateProduct',
+                        id: id,
+                        name: document.getElementById('e_name').value,
+                        category: document.getElementById('e_cat').value,
+                        price: document.getElementById('e_price').value,
+                        image: document.getElementById('e_img').value
+                    };
+                }
+            }).then((result) => {
+                if(result.isConfirmed) { post(result.value, 'আপডেট হয়েছে!'); }
+            });
+        }
+
+        // Helpers
+        function toggle(id) { const s = id.toString(); selectedProductIds.has(s) ? selectedProductIds.delete(s) : selectedProductIds.add(s); renderProducts(allProducts); }
+        function toggleSelectAll() { selectedProductIds.size === allProducts.length ? clearSelection() : allProducts.forEach(p => selectedProductIds.add(p.id.toString())); renderProducts(allProducts); }
+        function clearSelection() { selectedProductIds.clear(); renderProducts(allProducts); }
+        function updateBar() { const b = document.getElementById('bulk-action-bar'); document.getElementById('selected-count').innerText = selectedProductIds.size; selectedProductIds.size > 0 ? b.classList.remove('translate-y-32') : b.classList.add('translate-y-32'); }
+        function bulkDelete() { if(selectedProductIds.size===0) return; Swal.fire({ title: 'মুছে ফেলবেন?', text: 'সিলেক্ট করা পণ্যগুলো ডিলিট হবে', icon: 'warning', showCancelButton:true, confirmButtonText:'হ্যাঁ', confirmButtonColor:'#d33' }).then(r=>{ if(r.isConfirmed) post({ action: 'bulkDeleteProducts', ids: Array.from(selectedProductIds) }, 'ডিলিট হয়েছে!'); }); }
+        
+        function post(d, m) { Swal.fire({didOpen: () => Swal.showLoading()}); fetch(scriptURL, { method: 'POST', body: JSON.stringify(d) }).then(r=>r.json()).then(res => { if(res.result === 'success') { Swal.fire('সফল', m, 'success'); loadAll(); } else Swal.fire('Error', 'সমস্যা হয়েছে', 'error'); }); }
+        function searchProducts() { const q = document.getElementById('productSearchInput').value.toLowerCase(); renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(q))); }
+        function updateStats() { document.getElementById('total-orders').innerText = allOrders.length; document.getElementById('total-products-count').innerText = allProducts.length; let t=0; allOrders.forEach(r=>t+=parseInt(r[5])||0); document.getElementById('total-sales').innerText = '৳'+t.toLocaleString(); }
+        loadAll();
     </script>
 </body>
 </html>

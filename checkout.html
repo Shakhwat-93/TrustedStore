@@ -7,31 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; }
         .theme-bg { background-color: #006D5B; }
         .theme-text { color: #006D5B; }
-        .theme-border:focus { border-color: #006D5B; ring: 1px solid #006D5B; }
-        
-        /* লোডিং স্পিনার */
-        .loader {
-            border: 3px solid #f3f3f3; /* Light grey */
-            border-top: 3px solid #ffffff; /* White */
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #ffffff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* বাউন্স এনিমেশন */
-        @keyframes bounce-slight {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-bounce-slight { animation: bounce-slight 2s infinite; }
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -42,234 +27,161 @@
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 pb-20 max-w-5xl">
+    <div class="container mx-auto px-4 pb-20 max-w-5xl fade-in">
         <div class="flex flex-col lg:flex-row gap-8">
             
             <div class="w-full lg:w-2/3">
                 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-6">
                     <h2 class="text-xl font-bold mb-6 border-b pb-3 theme-text flex items-center gap-2">
-                        <span class="bg-[#006D5B]/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">১</span>
-                        আপনার তথ্য দিন
+                        <span class="bg-[#006D5B]/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">১</span> আপনার তথ্য দিন
                     </h2>
-                    
                     <form id="order-form" class="space-y-5">
                         <div>
                             <label class="block font-bold text-gray-700 mb-2 text-sm">আপনার নাম</label>
-                            <input type="text" id="cus_name" placeholder="পুরো নাম লিখুন" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] transition bg-gray-50/50" required>
+                            <input type="text" id="cus_name" placeholder="পুরো নাম" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] bg-gray-50/50" required>
                         </div>
                         <div>
-                            <label class="block font-bold text-gray-700 mb-2 text-sm">মোবাইল নাম্বার</label>
-                            <input type="tel" id="cus_phone" placeholder="017xxxxxxxx" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] transition bg-gray-50/50" required>
+                            <label class="block font-bold text-gray-700 mb-2 text-sm">মোবাইল নাম্বার (১১ ডিজিট)</label>
+                            <input type="tel" id="cus_phone" placeholder="017xxxxxxxx" pattern="[0-9]{11}" maxlength="11" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] bg-gray-50/50" required>
                         </div>
                         <div>
                             <label class="block font-bold text-gray-700 mb-2 text-sm">সম্পূর্ণ ঠিকানা</label>
-                            <textarea id="cus_address" placeholder="বাসা নং, রোড নং, এলাকা, জেলা..." class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] transition bg-gray-50/50" rows="3" required></textarea>
+                            <textarea id="cus_address" placeholder="বাসা নং, রোড নং, এলাকা..." class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] bg-gray-50/50" rows="3" required></textarea>
                         </div>
                     </form>
-                </div>
-
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 class="text-xl font-bold mb-6 border-b pb-3 theme-text flex items-center gap-2">
-                        <span class="bg-[#006D5B]/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">২</span>
-                        ডেলিভারি এরিয়া
-                    </h2>
-                    <div class="space-y-4">
-                        <label class="flex items-center p-4 border rounded-xl cursor-pointer transition border-[#006D5B] bg-[#006D5B]/5 ring-1 ring-[#006D5B]" id="label-inside">
-                            <input type="radio" name="delivery" value="60" onchange="updateTotal()" checked class="h-5 w-5 text-[#006D5B] focus:ring-[#006D5B]">
-                            <div class="ml-4 flex-1">
-                                <span class="block font-bold text-gray-800">ঢাকার ভিতরে</span>
-                                <span class="text-xs text-gray-500">২৪-৪৮ ঘণ্টার মধ্যে ডেলিভারি</span>
-                            </div>
-                            <span class="font-bold text-gray-800">৳৬০</span>
-                        </label>
-                        <label class="flex items-center p-4 border rounded-xl cursor-pointer transition hover:bg-gray-50 border-gray-200" id="label-outside">
-                            <input type="radio" name="delivery" value="120" onchange="updateTotal()" class="h-5 w-5 text-[#006D5B] focus:ring-[#006D5B]">
-                            <div class="ml-4 flex-1">
-                                <span class="block font-bold text-gray-800">ঢাকার বাহিরে</span>
-                                <span class="text-xs text-gray-500">কুরিয়ার ডেলিভারি (৩-৫ দিন)</span>
-                            </div>
-                            <span class="font-bold text-gray-800">৳১২০</span>
-                        </label>
-                    </div>
                 </div>
             </div>
 
             <div class="w-full lg:w-1/3">
                 <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-6">
                     <h2 class="text-lg font-bold mb-4 text-gray-800">অর্ডার সামারি</h2>
-                    
                     <div id="cart-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2"></div>
-
-                    <div class="border-t border-dashed border-gray-200 pt-4 space-y-3 text-gray-600 text-sm">
-                        <div class="flex justify-between">
-                            <span>পণ্যের দাম</span>
-                            <span id="subtotal" class="font-bold text-gray-800">৳0</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>ডেলিভারি চার্জ</span>
-                            <span id="delivery-fee" class="font-bold text-gray-800">৳60</span>
-                        </div>
-                        <div class="flex justify-between font-bold text-xl theme-text border-t pt-4 mt-2">
-                            <span>সর্বমোট</span>
-                            <span id="grand-total">৳0</span>
+                    
+                    <div class="mb-4 bg-gray-50 p-3 rounded-xl border border-dashed border-gray-200">
+                        <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase">ডেলিভারি এরিয়া সিলেক্ট করুন</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer transition bg-white border-[#006D5B] ring-1 ring-[#006D5B]">
+                                <input type="radio" name="delivery" value="60" onchange="updateTotal()" checked class="h-4 w-4 text-[#006D5B]">
+                                <div class="ml-3 flex-1"><span class="block font-bold text-sm text-gray-800">ঢাকার ভিতরে</span></div><span class="font-bold text-sm text-gray-800">৳৬০</span>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-lg cursor-pointer transition bg-white border-gray-200">
+                                <input type="radio" name="delivery" value="120" onchange="updateTotal()" class="h-4 w-4 text-[#006D5B]">
+                                <div class="ml-3 flex-1"><span class="block font-bold text-sm text-gray-800">ঢাকার বাহিরে</span></div><span class="font-bold text-sm text-gray-800">৳১২০</span>
+                            </label>
                         </div>
                     </div>
 
-                    <button onclick="placeOrder()" id="order-btn" class="w-full theme-bg text-white py-4 rounded-xl mt-6 font-bold hover:bg-[#005a4b] transition shadow-lg text-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <div class="border-t border-gray-100 pt-4 space-y-2 text-gray-600 text-sm">
+                        <div class="flex justify-between"><span>পণ্যের দাম</span><span id="subtotal" class="font-bold text-gray-800">৳0</span></div>
+                        <div class="flex justify-between"><span>ডেলিভারি চার্জ</span><span id="delivery-fee" class="font-bold text-gray-800">৳60</span></div>
+                        <div class="flex justify-between font-bold text-xl theme-text border-t pt-2 mt-2"><span>সর্বমোট</span><span id="grand-total">৳0</span></div>
+                    </div>
+
+                    <button onclick="placeOrder()" id="order-btn" class="w-full theme-bg text-white py-4 rounded-xl mt-6 font-bold hover:bg-[#005a4b] transition shadow-lg text-lg flex justify-center items-center gap-2">
                         <span>অর্ডার কনফার্ম করুন</span> <i class="fas fa-check-circle"></i>
                     </button>
-                    <p class="text-center text-xs text-gray-400 mt-4 bg-gray-50 py-2 rounded">ক্যাশ অন ডেলিভারি প্রযোজ্য</p>
+                    <p class="text-center text-xs text-gray-400 mt-2">ক্যাশ অন ডেলিভারি প্রযোজ্য</p>
+                </div>
+
+                <div class="mt-4 bg-blue-50 p-5 rounded-2xl border border-blue-100 shadow-sm text-center">
+                    <h3 class="font-bold text-blue-800 mb-2"><i class="fas fa-mobile-alt"></i> পেমেন্ট মেথড</h3>
+                    <p class="text-xs text-blue-600 mb-3">এডভান্স পেমেন্ট করতে চাইলে নিচের নাম্বারে পাঠাতে পারেন।</p>
+                    <div class="bg-white py-2 px-4 rounded-lg inline-block border border-blue-200">
+                        <p class="font-bold text-lg text-gray-800 tracking-wider select-all">017XX-XXXXXX</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mt-1">Bkash / Nagad (Personal)</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="order-success" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 backdrop-blur-sm">
-        <div class="bg-white p-10 rounded-3xl text-center max-w-sm mx-4 shadow-2xl animate-bounce-slight relative">
-            <div class="w-20 h-20 bg-[#006D5B]/10 text-[#006D5B] rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-                <i class="fas fa-check"></i>
-            </div>
-            <h3 class="text-2xl font-bold mb-2 text-gray-800">অর্ডার সফল হয়েছে!</h3>
-            <p class="text-gray-500 mb-8 text-sm leading-relaxed">আপনার অর্ডারটি আমাদের কাছে পৌঁছেছে। শীঘ্রই কল করে কনফার্ম করা হবে।</p>
-            <button onclick="window.location.href='index.html'" class="theme-bg text-white px-8 py-3 rounded-xl font-bold w-full shadow-lg hover:bg-[#005a4b] transition">হোমে ফিরে যান</button>
-        </div>
-    </div>
-
     <script>
-        // ==========================================
-        // আপনার Google Sheet Web App URL
-        // ==========================================
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwzAFmcBJZNoii1G7pQZ2lPFBRQ-vRgdm872Wx9ilAyv5Q6GitmG9XufQJl_zlmxCRb/exec';
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         
-        // কার্ট রেন্ডার ফাংশন
         function renderCart() {
             const container = document.getElementById('cart-items');
             let subtotal = 0;
-            
             if(cart.length === 0) {
                 container.innerHTML = "<p class='text-red-400 text-center py-4 text-sm'>কোনো পণ্য নেই!</p>";
-                // কার্ট খালি থাকলে বাটন ডিজেবল করা
                 document.getElementById('order-btn').disabled = true;
             } else {
                 document.getElementById('order-btn').disabled = false;
                 container.innerHTML = "";
                 cart.forEach((item, index) => {
-                    subtotal += item.price;
-                    container.innerHTML += `
-                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <div class="flex items-center gap-3">
-                                <img src="${item.img}" class="w-12 h-12 rounded-md object-cover border">
-                                <div>
-                                    <p class="text-sm font-bold text-gray-800 line-clamp-1 w-32">${item.name}</p>
-                                    <p class="text-xs theme-text font-bold">৳${item.price}</p>
-                                </div>
-                            </div>
-                            <button onclick="removeItem(${index})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
-                        </div>
-                    `;
+                    subtotal += parseInt(item.price);
+                    container.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100"><div class="flex items-center gap-3"><img src="${item.img}" class="w-12 h-12 rounded-md object-cover border" onerror="this.src='https://via.placeholder.com/50'"><div><p class="text-sm font-bold text-gray-800 line-clamp-1 w-32">${item.name}</p><p class="text-xs theme-text font-bold">৳${item.price}</p></div></div><button onclick="removeItem(${index})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times"></i></button></div>`;
                 });
             }
             document.getElementById('subtotal').innerText = '৳' + subtotal;
-            updateTotal(subtotal);
+            updateTotal();
         }
 
-        // টোটাল আপডেট ফাংশন
         function updateTotal() {
-            let subtotal = 0;
-            cart.forEach(item => subtotal += item.price);
-            
+            let subtotal = 0; cart.forEach(i => subtotal += parseInt(i.price));
             const radios = document.getElementsByName('delivery');
-            radios.forEach(radio => {
-                const label = radio.parentElement;
-                if(radio.checked) {
-                    label.classList.add('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]');
-                    label.classList.remove('border-gray-200');
-                } else {
-                    label.classList.remove('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]');
-                    label.classList.add('border-gray-200');
-                }
+            radios.forEach(r => {
+                const l = r.parentElement;
+                if(r.checked) { l.classList.add('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]'); l.classList.remove('border-gray-200'); } 
+                else { l.classList.remove('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]'); l.classList.add('border-gray-200'); }
             });
-
-            const deliveryCharge = parseInt(document.querySelector('input[name="delivery"]:checked').value);
-            document.getElementById('delivery-fee').innerText = '৳' + deliveryCharge;
-            document.getElementById('grand-total').innerText = '৳' + (subtotal + deliveryCharge);
+            const d = parseInt(document.querySelector('input[name="delivery"]:checked').value);
+            document.getElementById('delivery-fee').innerText = '৳' + d;
+            document.getElementById('grand-total').innerText = '৳' + (subtotal + d);
         }
 
-        // আইটেম রিমুভ ফাংশন
-        function removeItem(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        }
+        function removeItem(i) { cart.splice(i, 1); localStorage.setItem('cart', JSON.stringify(cart)); renderCart(); }
 
-        // ==========================
-        // PLACE ORDER TO GOOGLE SHEET
-        // ==========================
         function placeOrder() {
-            // ১. ভ্যালিডেশন
-            if(cart.length === 0) { alert("আপনার কার্ট খালি!"); return; }
-            
+            if(cart.length === 0) { Swal.fire('Error', 'কার্ট খালি!', 'error'); return; }
             const name = document.getElementById('cus_name').value.trim();
             const phone = document.getElementById('cus_phone').value.trim();
             const address = document.getElementById('cus_address').value.trim();
 
-            if(!name || !phone || !address) {
-                alert("দয়া করে আপনার নাম, মোবাইল এবং ঠিকানা সঠিকভাবে দিন।");
-                return;
-            }
+            if(!name || !phone || !address) { Swal.fire('Warning', 'সব তথ্য পূরণ করুন', 'warning'); return; }
+            if(!/^\d{11}$/.test(phone)) { Swal.fire('Invalid Phone', 'সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন', 'error'); return; }
 
-            // ২. লোডিং শুরু
             const btn = document.getElementById('order-btn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = `<span class="loader"></span> অর্ডার প্রসেসিং...`;
+            btn.innerHTML = `<span class="loader"></span> প্রসেসিং...`;
             btn.disabled = true;
-            btn.classList.add('opacity-75');
 
-            // ৩. ডাটা তৈরি
-            let subtotal = 0;
-            cart.forEach(i => subtotal += i.price);
-            const deliveryCharge = parseInt(document.querySelector('input[name="delivery"]:checked').value);
-            const total = subtotal + deliveryCharge;
-            const deliveryMethod = deliveryCharge === 60 ? "Inside Dhaka" : "Outside Dhaka";
-
-            // পণ্যগুলোকে স্ট্রিং আকারে সাজানো
-            const itemsString = cart.map(item => `${item.name} - ${item.price}tk`).join(", ");
+            let subtotal = 0; cart.forEach(i => subtotal += parseInt(i.price));
+            const dCharge = parseInt(document.querySelector('input[name="delivery"]:checked').value);
+            const total = subtotal + dCharge;
+            const dMethod = dCharge === 60 ? "Inside Dhaka" : "Outside Dhaka";
+            const items = cart.map(i => `${i.name} (৳${i.price})`).join(", ");
 
             const orderData = {
+                action: 'order',
                 name: name,
                 phone: phone,
-                address: address,
-                items: itemsString,
-                total: total,
-                delivery: deliveryMethod
+                address: address + ` (${dMethod})`,
+                items: items,
+                total: total
             };
 
-            // ৪. ডাটা পাঠানো (Google Script)
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors', // এটি গুরুত্বপূর্ণ Google Apps Script এর জন্য
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orderData)
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(orderData) })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    localStorage.removeItem('cart');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'অর্ডার সফল!',
+                        text: 'শীঘ্রই আমাদের প্রতিনিধি যোগাযোগ করবেন।',
+                        confirmButtonText: 'হোমে ফিরে যান',
+                        confirmButtonColor: '#006D5B'
+                    }).then(() => { window.location.href = 'index.html'; });
+                } else { throw new Error("Server Error"); }
             })
-            .then(response => {
-                // ৫. সফল হলে
-                localStorage.removeItem('cart'); // কার্ট খালি করা
-                document.getElementById('order-success').classList.remove('hidden');
+            .catch(err => {
+                console.error(err);
+                Swal.fire('Error', 'নেটওয়ার্ক সমস্যা, আবার চেষ্টা করুন।', 'error');
             })
-            .catch(error => {
-                alert("দুঃখিত, অর্ডার সাবমিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                btn.classList.remove('opacity-75');
-                console.error('Error!', error.message);
-            });
+            .finally(() => { btn.innerHTML = originalText; btn.disabled = false; });
         }
-
-        // পেজ লোড হলে কার্ট দেখাও
         renderCart();
     </script>
 </body>

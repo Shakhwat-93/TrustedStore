@@ -7,26 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
         .theme-bg { background-color: #006D5B; }
         .theme-text { color: #006D5B; }
-        .theme-border { border-color: #006D5B; }
-        #cart-drawer { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fade-in-up { animation: fadeInUp 0.8s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .btn-press:active { transform: scale(0.95); }
-        
-        /* লোডার */
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #006D5B;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #006D5B; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -35,12 +26,12 @@
     <nav class="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-100">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="index.html" class="flex items-center gap-2 group">
-                <div class="bg-white p-1 rounded-full border border-gray-200">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3176/3176363.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10">
+                <div class="bg-white p-1">
+                    <img src="assests/logo.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10">
                 </div>
                 <div>
                     <span class="block text-lg md:text-xl font-bold leading-none theme-text">TRUSTED</span>
-                    <span class="block text-[10px] md:text-xs font-bold text-gray-400 tracking-wider">STORE</span>
+                    <span class="block text-[10px] md:text-xs font-bold text-gray-400 tracking-wider">Online STORE</span>
                 </div>
             </a>
             <div class="hidden md:flex items-center gap-6">
@@ -49,7 +40,7 @@
         </div>
     </nav>
 
-    <section class="bg-[#006D5B]/5 py-8 md:py-20 overflow-hidden">
+    <section class="bg-[#006D5B]/5 py-8 md:py-20 overflow-hidden fade-in-up">
         <div class="container mx-auto px-4">
             <div class="flex flex-col-reverse md:flex-row items-center gap-8 md:gap-16">
                 <div class="w-full md:w-1/2 text-center md:text-left space-y-4 md:space-y-6">
@@ -61,13 +52,13 @@
                     </div>
                 </div>
                 <div class="w-full md:w-1/2 relative px-4 md:px-0">
-                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Hero Image" class="relative z-10 w-full h-auto rounded-2xl shadow-xl border-4 border-white">
+                    <img src="assests/10 (1).jpeg" alt="Hero Image" class="relative z-10 w-full h-auto rounded-2xl shadow-xl border-4 border-white hover:scale-105 transition duration-500">
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-8 md:py-12 bg-white border-b border-gray-100">
+    <section class="py-8 md:py-12 bg-white border-b border-gray-100 fade-in-up" style="animation-delay: 0.2s;">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-6">
                 <div>
@@ -79,24 +70,108 @@
                     <button onclick="scrollCarousel('right')" class="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-[#006D5B] hover:text-white transition"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
-            
             <div id="carousel-loader" class="spinner"></div>
-            
-            <div id="carousel-container" class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 px-1 snap-x hidden">
-                </div>
+            <div id="carousel-container" class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 px-1 snap-x hidden"></div>
         </div>
     </section>
 
-    <section class="bg-[#F8FAFC] py-10 mb-16">
+    <section class="bg-[#F8FAFC] py-10 fade-in-up" style="animation-delay: 0.4s;">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">জনপ্রিয় পণ্যসমূহ</h2>
-            
             <div id="grid-loader" class="spinner"></div>
-
-            <div id="product-list" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 hidden">
-                </div>
+            <div id="product-list" class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 hidden"></div>
         </div>
     </section>
+
+    <footer class="bg-black text-gray-400 py-12 border-t border-gray-800 mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="space-y-4">
+                    <a href="#" class="flex items-center gap-2 mb-4">
+                        <div class="bg-white p-1 rounded-full"><img src="https://cdn-icons-png.flaticon.com/512/3176/3176363.png" class="w-8 h-8"></div>
+                        <div>
+                            <span class="block text-xl font-bold text-white leading-none">TRUSTED</span>
+                            <span class="block text-xs font-bold text-gray-500">Online STORE</span>
+                        </div>
+                    </a>
+                    
+                    <div>
+                        <h4 class="text-white font-bold mb-1 text-sm"><i class="fas fa-phone-alt mr-2"></i> Phone Number</h4>
+                        <p class="text-sm">01567-884423</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1 text-sm"><i class="fas fa-envelope mr-2"></i> Email Address</h4>
+                        <p class="text-sm">raihankhan35500@gmail.com</p>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-4 pt-2">
+                        <button class="bg-gray-800 px-3 py-1.5 rounded flex items-center gap-2 hover:bg-gray-700 transition border border-gray-700">
+                            <i class="fab fa-apple text-xl text-white"></i>
+                            <div class="text-left leading-none">
+                                <span class="block text-[9px] text-gray-400">Download on the</span>
+                                <span class="block text-xs font-bold text-white">App Store</span>
+                            </div>
+                        </button>
+                        <button class="bg-gray-800 px-3 py-1.5 rounded flex items-center gap-2 hover:bg-gray-700 transition border border-gray-700">
+                            <i class="fab fa-google-play text-lg text-green-500"></i>
+                            <div class="text-left leading-none">
+                                <span class="block text-[9px] text-gray-400">GET IT ON</span>
+                                <span class="block text-xs font-bold text-white">Google Play</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+    
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-sm tracking-wider">LOCATION</h3>
+                    <ul class="space-y-5 text-sm">
+                        <li class="flex gap-3">
+                            <i class="fas fa-map-marker-alt text-orange-500 mt-1"></i>
+                            <div>
+                                <span class="block font-bold text-gray-300">Dhaka , Mirpur, Bangladesh</span>
+                                <span class="block text-xs mt-0.5">Dhaka , Mirpur, Bangladesh</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+    
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-sm tracking-wider">ABOUT US</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="contact.html" class="hover:text-orange-500 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Corporate</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Order Tracking</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Blog & News</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Join Careers</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Contact Us</a></li>
+                    </ul>
+                </div>
+    
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-sm tracking-wider">POLICY</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#" class="hover:text-orange-500 transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">EMI Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Warranty Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Exchange Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Refund Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2025 Trusted Store. Made by <a href="https://www.facebook.com/yourRasel93">Shakhwat Hossain Rasel</a>.</p>
+                <div class="flex gap-4 mt-2 md:mt-0">
+                    <a href="https://www.facebook.com/trustedonlinestoredxn" class="hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                    <a href="instagram.com/anikehasan1.0" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+                    <a href="tiktok.com/@trustedonlinestore2" class="hover:text-white"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-5px_10px_rgba(0,0,0,0.05)] z-50 md:hidden pb-safe">
         <div class="grid grid-cols-4 h-16 items-center">
@@ -125,132 +200,96 @@
     </div>
 
     <script>
-        // ==========================================
-        // আপনার Google Script URL (এখানে পেস্ট করুন)
-        // ==========================================
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwzAFmcBJZNoii1G7pQZ2lPFBRQ-vRgdm872Wx9ilAyv5Q6GitmG9XufQJl_zlmxCRb/exec';
-                        
         let allProducts = [];
 
-        // 1. Fetch Products from Google Sheet
         async function fetchProducts() {
             try {
                 const response = await fetch(scriptURL + '?action=getProducts');
                 allProducts = await response.json();
-                
                 renderHomeProducts(allProducts);
-                
-                // Hide Loaders
                 document.getElementById('carousel-loader').classList.add('hidden');
                 document.getElementById('grid-loader').classList.add('hidden');
                 document.getElementById('carousel-container').classList.remove('hidden');
                 document.getElementById('product-list').classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Error loading products:", error);
-            }
+            } catch (error) { console.error("Error:", error); }
         }
 
-        // 2. Render Functions
         function renderHomeProducts(products) {
             const carouselContainer = document.getElementById('carousel-container');
             const gridContainer = document.getElementById('product-list');
             
-            // Carousel (Show first 6 products)
             products.slice(0, 6).forEach(product => {
                 carouselContainer.innerHTML += `
                     <div class="snap-start min-w-[160px] md:min-w-[220px] bg-white rounded-xl p-2 md:p-3 border border-gray-100 shadow-sm cursor-pointer flex flex-col group hover:shadow-lg transition">
                         <div class="h-32 md:h-40 overflow-hidden rounded-lg mb-2 relative bg-gray-100">
-                            <img src="${product.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <img src="${product.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://via.placeholder.com/150'">
                             <button onclick="addToCart(${product.id})" class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-[#006D5B] text-white flex items-center justify-center shadow-lg active:scale-90 transition"><i class="fas fa-plus text-xs"></i></button>
                         </div>
                         <h3 class="font-bold text-gray-800 text-xs md:text-sm truncate">${product.name}</h3>
                         <span class="theme-text font-bold text-sm md:text-base">৳${product.price}</span>
-                    </div>
-                `;
+                    </div>`;
             });
 
-            // Grid (Show all products)
             products.forEach(product => {
                 gridContainer.innerHTML += `
                     <div class="bg-white rounded-xl p-3 md:p-4 shadow-sm border border-gray-100 text-center flex flex-col h-full hover:shadow-lg transition">
                         <div class="relative aspect-square mb-3 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="${product.img}" class="w-full h-full object-cover">
+                            <img src="${product.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
                         </div>
                         <h3 class="font-bold text-gray-800 text-sm md:text-lg mb-1 line-clamp-2 min-h-[2.5em]">${product.name}</h3>
                         <p class="theme-text font-bold text-base md:text-xl mb-3">৳${product.price}</p>
                         <button onclick="addToCart(${product.id})" class="w-full theme-bg text-white py-2 md:py-2.5 rounded-lg font-bold text-sm md:text-base hover:bg-[#005a4b] transition mt-auto btn-press shadow-md">অর্ডার করুন</button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        // 3. Scroll Logic
-        function scrollCarousel(direction) {
-            const container = document.getElementById('carousel-container');
-            const scrollAmount = container.clientWidth / 2;
-            container.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-        }
+        function scrollCarousel(d) { const c = document.getElementById('carousel-container'); c.scrollBy({ left: d === 'left' ? -200 : 200, behavior: 'smooth' }); }
 
-        // 4. Cart Logic (Standard)
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         updateCartUI();
 
         function addToCart(id) {
-            // Find from fetched products
-            const product = allProducts.find(p => p.id == id); // Loose equality for string/number ID match
-            if(product) {
-                cart.push(product);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartUI();
-                openCart();
+            const product = allProducts.find(p => p.id == id);
+            if(product) { 
+                cart.push(product); 
+                localStorage.setItem('cart', JSON.stringify(cart)); 
+                updateCartUI(); 
+                
+                // Professional Toast
+                const Toast = Swal.mixin({
+                    toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, timerProgressBar: true,
+                    didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+                });
+                Toast.fire({ icon: 'success', title: 'কার্টে যোগ হয়েছে' });
             }
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-        }
+        function removeFromCart(index) { cart.splice(index, 1); localStorage.setItem('cart', JSON.stringify(cart)); updateCartUI(); }
 
         function updateCartUI() {
             const container = document.getElementById('cart-items-container');
             let total = 0;
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400"><i class="fas fa-shopping-basket text-4xl mb-2 opacity-30"></i><p>ব্যাগ খালি!</p></div>`;
-            } else {
+            if (cart.length === 0) { container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400"><i class="fas fa-shopping-basket text-4xl mb-2 opacity-30"></i><p>ব্যাগ খালি!</p></div>`; } 
+            else {
                 container.innerHTML = "";
                 cart.forEach((item, index) => {
                     total += parseInt(item.price);
-                    container.innerHTML += `
-                        <div class="flex gap-3 items-center bg-white p-2.5 rounded-xl border border-gray-100 shadow-sm animate-fade-in">
-                            <img src="${item.img}" class="w-12 h-12 rounded-lg object-cover bg-gray-100">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-xs md:text-sm text-gray-800 line-clamp-1">${item.name}</h4>
-                                <p class="theme-text font-bold text-xs md:text-sm">৳${item.price}</p>
-                            </div>
-                            <button onclick="removeFromCart(${index})" class="w-7 h-7 flex items-center justify-center rounded-full bg-red-50 text-red-500"><i class="fas fa-trash-alt text-xs"></i></button>
-                        </div>`;
+                    container.innerHTML += `<div class="flex gap-3 items-center bg-white p-2.5 rounded-xl border border-gray-100 shadow-sm"><img src="${item.img}" class="w-12 h-12 rounded-lg object-cover bg-gray-100" onerror="this.src='https://via.placeholder.com/50'"><div class="flex-1"><h4 class="font-bold text-xs md:text-sm text-gray-800 line-clamp-1">${item.name}</h4><p class="theme-text font-bold text-xs md:text-sm">৳${item.price}</p></div><button onclick="removeFromCart(${index})" class="w-7 h-7 flex items-center justify-center rounded-full bg-red-50 text-red-500"><i class="fas fa-trash-alt text-xs"></i></button></div>`;
                 });
             }
             document.getElementById('drawer-total').innerText = '৳' + total;
             document.getElementById('mobile-cart-badge').innerText = cart.length;
             document.getElementById('sticky-count').innerText = cart.length;
             document.getElementById('sticky-total').innerText = '৳' + total;
-
-            const miniCart = document.getElementById('mini-sticky-cart');
-            if(cart.length > 0) miniCart.classList.remove('opacity-0', 'translate-y-10');
-            else miniCart.classList.add('opacity-0', 'translate-y-10');
+            const mini = document.getElementById('mini-sticky-cart');
+            cart.length > 0 ? mini.classList.remove('opacity-0', 'translate-y-10') : mini.classList.add('opacity-0', 'translate-y-10');
         }
 
-        function toggleCart() {
-            const drawer = document.getElementById('cart-drawer');
-            if (drawer.classList.contains('translate-x-full')) openCart(); else closeCart();
-        }
+        function toggleCart() { const d = document.getElementById('cart-drawer'); d.classList.contains('translate-x-full') ? openCart() : closeCart(); }
         function openCart() { document.getElementById('cart-drawer').classList.remove('translate-x-full'); document.getElementById('cart-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
         function closeCart() { document.getElementById('cart-drawer').classList.add('translate-x-full'); document.getElementById('cart-overlay').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-        // Initial Fetch
         fetchProducts();
     </script>
 </body>
