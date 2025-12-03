@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন প্যানেল</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #F3F4F6; }
+        .theme-bg { background-color: #006D5B; }
+        .theme-text { color: #006D5B; }
+        .sidebar-link.active { background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid white; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #006D5B; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="text-gray-800 h-screen overflow-hidden flex">
+
+    <aside class="w-64 theme-bg text-white hidden md:flex flex-col shadow-2xl z-20">
+        <div class="p-6 flex items-center gap-3 border-b border-white/10">
+            <h1 class="text-xl font-bold">অ্যাডমিন প্যানেল</h1>
+        </div>
+        <nav class="flex-1 p-4 space-y-2 mt-4">
+            <a href="#" onclick="showSection('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
+                <i class="fas fa-chart-pie w-5"></i> ড্যাশবোর্ড
+            </a>
+            <a href="#" onclick="showSection('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
+                <i class="fas fa-shopping-cart w-5"></i> অর্ডার সমূহ
+            </a>
+            <a href="#" onclick="showSection('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition">
+                <i class="fas fa-box-open w-5"></i> প্রোডাক্ট কন্ট্রোল
+            </a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+            <a href="index.html" target="_blank" class="flex items-center justify-center bg-white/20 py-2 rounded-lg text-sm font-bold">ওয়েবসাইট দেখুন</a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative">
+        <header class="bg-white shadow-sm h-16 flex items-center px-6 z-10 justify-between">
+            <h2 class="text-xl font-bold theme-text" id="page-title">ড্যাশবোর্ড ওভারভিউ</h2>
+            <div class="md:hidden">
+                <button onclick="document.querySelector('aside').classList.toggle('hidden')" class="text-gray-600"><i class="fas fa-bars text-xl"></i></button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 bg-gray-50">
+            
+            <div id="dashboard-section" class="space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-bold">মোট বিক্রি</p>
+                            <h3 class="text-3xl font-bold theme-text mt-1" id="total-sales">৳0</h3>
+                        </div>
+                        <div class="w-14 h-14 bg-green-100 text-[#006D5B] rounded-full flex items-center justify-center text-2xl"><i class="fas fa-coins"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-bold">মোট অর্ডার</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-1" id="total-orders">0</h3>
+                        </div>
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-shopping-bag"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm font-bold">মোট প্রোডাক্ট</p>
+                            <h3 class="text-3xl font-bold text-purple-600 mt-1" id="total-products-count">0</h3>
+                        </div>
+                        <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl"><i class="fas fa-box"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders-section" class="hidden">
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+                    <div class="flex justify-between mb-4">
+                        <h3 class="font-bold text-lg">অর্ডার লিস্ট</h3>
+                        <button onclick="fetchOrders()" class="text-sm border px-4 py-2 rounded hover:bg-gray-100"><i class="fas fa-sync-alt"></i> রিফ্রেশ</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-100 text-sm uppercase">
+                                <tr>
+                                    <th class="p-3">তারিখ</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">ফোন</th>
+                                    <th class="p-3">অর্ডার</th>
+                                    <th class="p-3">বিল</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-table-body" class="text-sm text-gray-700"></tbody>
+                        </table>
+                        <div id="order-loader" class="py-10 text-center hidden"><div class="loader"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="products-section" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-xl">প্রোডাক্ট লিস্ট</h3>
+                    <button onclick="uploadProduct()" class="theme-bg text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-[#005a4b] transition flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> নতুন পণ্য যোগ করুন
+                    </button>
+                </div>
+                <div id="product-loader" class="py-10 text-center hidden"><div class="loader"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="admin-product-list"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // আপনার নতুন URL
+        // ==========================================
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwzAFmcBJZNoii1G7pQZ2lPFBRQ-vRgdm872Wx9ilAyv5Q6GitmG9XufQJl_zlmxCRb/exec';
+
+        // নেভিগেশন
+        function showSection(sectionId) {
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if(activeLink) activeLink.classList.add('active');
+            
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('orders-section').classList.add('hidden');
+            document.getElementById('products-section').classList.add('hidden');
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+
+            const titles = { 'dashboard': 'ড্যাশবোর্ড', 'orders': 'অর্ডার ম্যানেজমেন্ট', 'products': 'প্রোডাক্ট কন্ট্রোল' };
+            document.getElementById('page-title').innerText = titles[sectionId];
+
+            if(sectionId === 'dashboard') { fetchOrders(); fetchProducts(true); }
+            if(sectionId === 'orders') fetchOrders();
+            if(sectionId === 'products') fetchProducts();
+        }
+
+        // 1. অর্ডার ফেচ করা
+        async function fetchOrders() {
+            const tableBody = document.getElementById('order-table-body');
+            const loader = document.getElementById('order-loader');
+            
+            if(tableBody) tableBody.innerHTML = '';
+            if(loader) loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch(scriptURL); // Default GET returns orders
+                const data = await response.json();
+                
+                if(loader) loader.classList.add('hidden');
+                
+                const orders = data.slice(1).reverse();
+                
+                updateStats(orders);
+
+                if(tableBody) {
+                    if(orders.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">কোনো অর্ডার নেই</td></tr>';
+                    } else {
+                        orders.forEach(row => {
+                            const tr = document.createElement('tr');
+                            tr.className = "border-b hover:bg-gray-50";
+                            tr.innerHTML = `
+                                <td class="p-3">${new Date(row[0]).toLocaleDateString('bn-BD')}</td>
+                                <td class="p-3 font-bold">${row[1]}</td>
+                                <td class="p-3 text-blue-600">${row[2]}</td>
+                                <td class="p-3 text-xs text-gray-600 max-w-xs truncate" title="${row[4]}">${row[4]}</td>
+                                <td class="p-3 font-bold theme-text">৳${row[5]}</td>
+                            `;
+                            tableBody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                if(loader) loader.innerHTML = '<span class="text-red-500">ডাটা লোড হয়নি!</span>';
+            }
+        }
+
+        function updateStats(orders) {
+            document.getElementById('total-orders').innerText = orders.length;
+            let totalSales = 0;
+            orders.forEach(row => totalSales += parseInt(row[5]) || 0);
+            document.getElementById('total-sales').innerText = '৳' + totalSales.toLocaleString();
+        }
+
+        // 2. প্রোডাক্ট ফেচ করা
+        async function fetchProducts(onlyCount = false) {
+            const container = document.getElementById('admin-product-list');
+            const loader = document.getElementById('product-loader');
+            
+            if(!onlyCount) {
+                container.innerHTML = '';
+                loader.classList.remove('hidden');
+            }
+
+            try {
+                const response = await fetch(scriptURL + '?action=getProducts');
+                const products = await response.json();
+                
+                if(loader) loader.classList.add('hidden');
+                document.getElementById('total-products-count').innerText = products.length;
+
+                if (!onlyCount) {
+                    if (products.length === 0) {
+                        container.innerHTML = '<div class="col-span-full text-center text-gray-500">কোনো পণ্য নেই</div>';
+                    } else {
+                        products.forEach(p => {
+                            container.innerHTML += `
+                                <div class="bg-white p-4 rounded-xl shadow-sm border text-center group hover:shadow-md transition">
+                                    <div class="h-32 overflow-hidden rounded-lg mb-3 relative bg-gray-50">
+                                        <img src="${p.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                                        <span class="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur-md uppercase">${p.category}</span>
+                                    </div>
+                                    <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${p.name}</h4>
+                                    <p class="theme-text font-bold text-base mt-1">৳${p.price}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                if(loader) loader.innerHTML = '<span class="text-red-500">প্রোডাক্ট লোড হয়নি!</span>';
+            }
+        }
+
+        // 3. প্রোডাক্ট আপলোড (FIXED)
+        function uploadProduct() {
+            Swal.fire({
+                title: 'নতুন পণ্য আপলোড',
+                html: `
+                    <div class="space-y-3 text-left">
+                        <input id="p_name" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="পণ্যের নাম">
+                        <select id="p_cat" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]">
+                            <option value="cosmetics">Cosmetics</option>
+                            <option value="supplements">Supplements</option>
+                            <option value="food">Food</option>
+                            <option value="skincare">Skincare</option>
+                        </select>
+                        <input id="p_price" type="number" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="দাম">
+                        <input id="p_img" class="w-full border p-2 rounded focus:outline-none focus:border-[#006D5B]" placeholder="ছবির লিংক (Direct Link)">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'আপলোড',
+                confirmButtonColor: '#006D5B',
+                preConfirm: () => {
+                    return {
+                        name: document.getElementById('p_name').value,
+                        category: document.getElementById('p_cat').value,
+                        price: document.getElementById('p_price').value,
+                        image: document.getElementById('p_img').value,
+                        action: 'addProduct'
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({ title: 'অপেক্ষা করুন...', didOpen: () => Swal.showLoading() });
+
+                    // POST Request (NO 'no-cors' here)
+                    fetch(scriptURL, {
+                        method: 'POST',
+                        body: JSON.stringify(result.value)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.result === 'success'){
+                            Swal.fire('সফল!', 'পণ্যটি যুক্ত করা হয়েছে', 'success');
+                            fetchProducts();
+                        } else {
+                            throw new Error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('এরর!', 'আপলোড হয়নি। সিটে "Products" ট্যাব আছে তো?', 'error');
+                        console.error(error);
+                    });
+                }
+            });
+        }
+
+        // Init
+        fetchOrders();
+    </script>
+</body>
+</html>
