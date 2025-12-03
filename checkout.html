@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অর্ডার কনফার্ম করুন</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; }
+        .theme-text { color: #006D5B; }
+        .theme-bg { background-color: #006D5B; }
+        .theme-hover:hover { background-color: #005a4b; }
+        .theme-border-focus:focus { border-color: #006D5B; ring: 1px solid #006D5B; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="bg-white shadow-sm py-5 mb-8 border-b border-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <a href="index.html" class="text-2xl font-bold theme-text">চেকআউট</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 pb-20 max-w-5xl">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <div class="w-full lg:w-2/3">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-6">
+                    <h2 class="text-xl font-bold mb-6 border-b pb-3 theme-text flex items-center gap-2">
+                        <span class="bg-[#006D5B]/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">১</span>
+                        আপনার তথ্য দিন
+                    </h2>
+                    
+                    <form class="space-y-5">
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-2 text-sm">আপনার নাম</label>
+                            <input type="text" placeholder="পুরো নাম লিখুন" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] focus:ring-1 focus:ring-[#006D5B] transition bg-gray-50/50">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-2 text-sm">মোবাইল নাম্বার</label>
+                            <input type="text" placeholder="017xxxxxxxx" class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] focus:ring-1 focus:ring-[#006D5B] transition bg-gray-50/50">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-700 mb-2 text-sm">সম্পূর্ণ ঠিকানা</label>
+                            <textarea placeholder="বাসা নং, রোড নং, এলাকা, জেলা..." class="w-full border border-gray-200 p-3.5 rounded-lg focus:outline-none focus:border-[#006D5B] focus:ring-1 focus:ring-[#006D5B] transition bg-gray-50/50" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold mb-6 border-b pb-3 theme-text flex items-center gap-2">
+                        <span class="bg-[#006D5B]/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">২</span>
+                        ডেলিভারি এরিয়া
+                    </h2>
+                    <div class="space-y-4">
+                        <label class="flex items-center p-4 border rounded-xl cursor-pointer transition border-[#006D5B] bg-[#006D5B]/5 ring-1 ring-[#006D5B]" id="label-inside">
+                            <input type="radio" name="delivery" value="60" onchange="updateTotal()" checked class="h-5 w-5 text-[#006D5B] focus:ring-[#006D5B]">
+                            <div class="ml-4 flex-1">
+                                <span class="block font-bold text-gray-800">ঢাকার ভিতরে</span>
+                                <span class="text-xs text-gray-500">২৪-৪৮ ঘণ্টার মধ্যে ডেলিভারি</span>
+                            </div>
+                            <span class="font-bold text-gray-800">৳৬০</span>
+                        </label>
+                        <label class="flex items-center p-4 border rounded-xl cursor-pointer transition hover:bg-gray-50 border-gray-200" id="label-outside">
+                            <input type="radio" name="delivery" value="120" onchange="updateTotal()" class="h-5 w-5 text-[#006D5B] focus:ring-[#006D5B]">
+                            <div class="ml-4 flex-1">
+                                <span class="block font-bold text-gray-800">ঢাকার বাহিরে</span>
+                                <span class="text-xs text-gray-500">কুরিয়ার ডেলিভারি (৩-৫ দিন)</span>
+                            </div>
+                            <span class="font-bold text-gray-800">৳১২০</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/3">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 sticky top-6">
+                    <h2 class="text-lg font-bold mb-4 text-gray-800">অর্ডার সামারি</h2>
+                    
+                    <div id="cart-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2"></div>
+
+                    <div class="border-t border-dashed border-gray-200 pt-4 space-y-3 text-gray-600 text-sm">
+                        <div class="flex justify-between">
+                            <span>পণ্যের দাম</span>
+                            <span id="subtotal" class="font-bold text-gray-800">৳0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>ডেলিভারি চার্জ</span>
+                            <span id="delivery-fee" class="font-bold text-gray-800">৳60</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-xl theme-text border-t pt-4 mt-2">
+                            <span>সর্বমোট</span>
+                            <span id="grand-total">৳0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="placeOrder()" class="w-full theme-bg text-white py-4 rounded-xl mt-6 font-bold theme-hover transition shadow-lg shadow-teal-900/20 text-lg flex justify-center items-center gap-2">
+                        অর্ডার কনফার্ম করুন <i class="fas fa-check-circle"></i>
+                    </button>
+                    <p class="text-center text-xs text-gray-400 mt-4 bg-gray-50 py-2 rounded">ক্যাশ অন ডেলিভারি প্রযোজ্য</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="order-success" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50 backdrop-blur-sm">
+        <div class="bg-white p-10 rounded-3xl text-center max-w-sm mx-4 shadow-2xl">
+            <div class="w-20 h-20 bg-[#006D5B]/10 text-[#006D5B] rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2 text-gray-800">ধন্যবাদ!</h3>
+            <p class="text-gray-500 mb-8 text-sm leading-relaxed">আপনার অর্ডারটি সফলভাবে নেওয়া হয়েছে। আমাদের প্রতিনিধি শীঘ্রই কল করে কনফার্ম করবেন।</p>
+            <button onclick="window.location.href='index.html'" class="theme-bg text-white px-8 py-3 rounded-xl font-bold theme-hover w-full shadow-lg">হোমে ফিরে যান</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            let subtotal = 0;
+            if(cart.length === 0) {
+                container.innerHTML = "<p class='text-red-400 text-center py-4 text-sm'>কোনো পণ্য নেই!</p>";
+            } else {
+                container.innerHTML = "";
+                cart.forEach((item, index) => {
+                    subtotal += item.price;
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <div class="flex items-center gap-3">
+                                <img src="${item.img}" class="w-12 h-12 rounded-md object-cover border">
+                                <div>
+                                    <p class="text-sm font-bold text-gray-800 line-clamp-1 w-32">${item.name}</p>
+                                    <p class="text-xs theme-text font-bold">৳${item.price}</p>
+                                </div>
+                            </div>
+                            <button onclick="removeItem(${index})" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('subtotal').innerText = '৳' + subtotal;
+            updateTotal(subtotal);
+        }
+
+        function updateTotal() {
+            let subtotal = 0;
+            cart.forEach(item => subtotal += item.price);
+            
+            const radios = document.getElementsByName('delivery');
+            radios.forEach(radio => {
+                const label = radio.parentElement;
+                if(radio.checked) {
+                    label.classList.add('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]');
+                    label.classList.remove('border-gray-200');
+                } else {
+                    label.classList.remove('bg-[#006D5B]/5', 'border-[#006D5B]', 'ring-1', 'ring-[#006D5B]');
+                    label.classList.add('border-gray-200');
+                }
+            });
+
+            const deliveryCharge = parseInt(document.querySelector('input[name="delivery"]:checked').value);
+            document.getElementById('delivery-fee').innerText = '৳' + deliveryCharge;
+            document.getElementById('grand-total').innerText = '৳' + (subtotal + deliveryCharge);
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function placeOrder() {
+            if(cart.length === 0) { alert("আপনার কার্টে কোনো পণ্য নেই!"); return; }
+            localStorage.removeItem('cart');
+            document.getElementById('order-success').classList.remove('hidden');
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>
