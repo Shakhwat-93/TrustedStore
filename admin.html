@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>অ্যাডমিন প্যানেল</title>
+    <title>অ্যাডমিন প্যানেল - লগইন</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,153 +17,245 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .product-checkbox { transform: scale(1.3); accent-color: #006D5B; cursor: pointer; }
         .selected-card { border: 2px solid #006D5B !important; background-color: #f0fdfa !important; }
-        
-        /* Mobile Sidebar Transition */
         #sidebar { transition: transform 0.3s ease-in-out; }
         .sidebar-overlay { background-color: rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
-        
-        /* SweetAlert Font Fix */
         .swal2-popup { font-family: 'Hind Siliguri', sans-serif; border-radius: 15px; font-size: 0.9rem; }
+        
+        /* Login Animation */
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="text-gray-800 h-screen overflow-hidden flex bg-gray-50">
+<body class="text-gray-800 h-screen overflow-hidden bg-gray-50">
 
-    <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 sidebar-overlay z-20 hidden opacity-0"></div>
-
-    <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 theme-bg text-white transform -translate-x-full md:translate-x-0 md:static flex flex-col shadow-2xl z-30 h-full">
-        <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fas fa-user-shield mr-2"></i>অ্যাডমিন</h1>
-            <button onclick="toggleSidebar()" class="md:hidden text-white hover:bg-white/20 rounded p-1"><i class="fas fa-times"></i></button>
-        </div>
-        <nav class="flex-1 p-4 space-y-2 mt-2 overflow-y-auto">
-            <a href="#" onclick="showSection('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-chart-pie w-5"></i> ড্যাশবোর্ড</a>
-            <a href="#" onclick="showSection('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-shopping-cart w-5"></i> অর্ডার</a>
-            <a href="#" onclick="showSection('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-box-open w-5"></i> প্রোডাক্ট</a>
-        </nav>
-        <div class="p-4 text-xs text-center text-white/50 border-t border-white/10">
-            ভার্সন ১.০
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden w-full">
-        <header class="bg-white shadow-sm h-16 flex items-center px-4 md:px-6 z-10 gap-4">
-            <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-xl p-2 rounded hover:bg-gray-100 focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h2 class="text-xl font-bold theme-text flex-1" id="page-title">ড্যাশবোর্ড</h2>
-            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500"><i class="fas fa-user"></i></div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50 relative scroll-smooth">
+    <div id="login-section" class="fixed inset-0 z-50 flex items-center justify-center theme-bg px-4">
+        <div class="glass-effect p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-sm text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 to-teal-600"></div>
             
-            <div id="dashboard-section" class="space-y-6 pb-20">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
-                        <div><p class="text-gray-500 font-bold text-sm">মোট বিক্রি</p><h3 class="text-2xl md:text-3xl font-bold theme-text mt-1" id="total-sales">৳0</h3></div>
-                        <div class="w-12 h-12 bg-green-100 text-[#006D5B] rounded-full flex items-center justify-center text-xl"><i class="fas fa-coins"></i></div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
-                        <div><p class="text-gray-500 font-bold text-sm">মোট অর্ডার</p><h3 class="text-2xl md:text-3xl font-bold mt-1" id="total-orders">0</h3></div>
-                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-shopping-bag"></i></div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
-                        <div><p class="text-gray-500 font-bold text-sm">মোট প্রোডাক্ট</p><h3 class="text-2xl md:text-3xl font-bold text-purple-600 mt-1" id="total-products-count">0</h3></div>
-                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-box"></i></div>
-                    </div>
+            <div class="mb-8">
+                <div class="bg-[#006D5B]/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-shield text-4xl theme-text"></i>
                 </div>
+                <h1 class="text-2xl font-bold theme-text uppercase tracking-wide">TRUSTED</h1>
+                <p class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase">Online Store Admin</p>
             </div>
 
-            <div id="orders-section" class="hidden space-y-4 pb-20">
-                <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border flex flex-col md:flex-row gap-3">
-                    <input type="text" id="orderSearchInput" onkeyup="searchOrders()" placeholder="অর্ডার খুঁজুন (নাম/ফোন)..." class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-[#006D5B]">
-                    <button onclick="fetchOrders()" class="bg-gray-100 px-6 py-2.5 rounded-lg hover:bg-gray-200 font-medium whitespace-nowrap"><i class="fas fa-sync-alt mr-2"></i>রিফ্রেশ</button>
+            <form onsubmit="event.preventDefault(); doLogin();" class="space-y-5">
+                <div class="relative">
+                    <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="admin_user" placeholder="ইউজারনেম" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#006D5B] focus:ring-1 focus:ring-[#006D5B] transition font-bold text-sm">
                 </div>
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left min-w-[600px]">
-                            <thead class="bg-gray-50 text-gray-500 text-xs uppercase border-b">
-                                <tr>
-                                    <th class="p-4">তারিখ</th>
-                                    <th class="p-4">কাস্টমার</th>
-                                    <th class="p-4">অ্যাড্রেস</th>
-                                    <th class="p-4 text-right">টাকা</th>
-                                </tr>
-                            </thead>
-                            <tbody id="order-table-body" class="divide-y"></tbody>
-                        </table>
-                    </div>
-                    <div id="order-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div>
+                <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="password" id="admin_pass" placeholder="পাসওয়ার্ড" class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#006D5B] focus:ring-1 focus:ring-[#006D5B] transition font-bold text-sm">
                 </div>
-            </div>
-
-            <div id="products-section" class="hidden space-y-5 pb-24">
-                <div class="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-xl shadow-sm border sticky top-0 z-10">
-                    <div class="flex-1">
-                        <input type="text" id="productSearchInput" onkeyup="searchProducts()" placeholder="পণ্যের নাম লিখুন..." class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-[#006D5B]">
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="toggleSelectAll()" id="selectAllBtn" class="flex-1 md:flex-none px-4 py-2 border rounded-lg hover:bg-gray-100 text-sm font-medium whitespace-nowrap">সব সিলেক্ট</button>
-                        <button onclick="uploadProduct()" class="flex-1 md:flex-none theme-bg text-white px-5 py-2 rounded-lg font-bold text-sm shadow hover:opacity-90 whitespace-nowrap"><i class="fas fa-plus mr-1"></i> নতুন</button>
-                    </div>
-                </div>
-
-                <div id="product-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5" id="admin-product-list"></div>
-
-                <div id="bulk-action-bar" class="fixed bottom-6 left-4 right-4 md:left-1/2 md:w-auto md:transform md:-translate-x-1/2 bg-gray-800 text-white px-4 py-3 rounded-full shadow-2xl z-40 flex justify-between md:justify-center items-center gap-4 md:gap-8 translate-y-32 transition-transform duration-300">
-                    <span class="font-bold text-sm ml-2"><span id="selected-count">0</span> সিলেক্টেড</span>
-                    <div class="flex gap-3 items-center">
-                        <button onclick="bulkDelete()" class="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-full font-bold text-sm shadow">ডিলিট</button>
-                        <button onclick="clearSelection()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 text-gray-400 hover:text-white transition"><i class="fas fa-times"></i></button>
-                    </div>
-                </div>
-            </div>
+                <button type="submit" class="w-full theme-bg text-white py-3.5 rounded-xl font-bold shadow-lg hover:bg-[#005a4b] transition active:scale-95 flex justify-center items-center gap-2">
+                    লগইন করুন <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <p class="mt-6 text-[10px] text-gray-400">Secure Access • Ver 1.0</p>
         </div>
-    </main>
+    </div>
+
+    <div id="admin-content" class="flex h-full hidden">
+        
+        <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 sidebar-overlay z-20 hidden opacity-0"></div>
+
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 theme-bg text-white transform -translate-x-full md:translate-x-0 md:static flex flex-col shadow-2xl z-30 h-full">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                <h1 class="text-xl font-bold"><i class="fas fa-user-shield mr-2"></i>অ্যাডমিন</h1>
+                <button onclick="toggleSidebar()" class="md:hidden text-white hover:bg-white/20 rounded p-1"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="flex-1 p-4 space-y-2 mt-2 overflow-y-auto">
+                <a href="#" onclick="showSection('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-chart-pie w-5"></i> ড্যাশবোর্ড</a>
+                <a href="#" onclick="showSection('orders')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-shopping-cart w-5"></i> অর্ডার</a>
+                <a href="#" onclick="showSection('products')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition"><i class="fas fa-box-open w-5"></i> প্রোডাক্ট</a>
+            </nav>
+            <div class="p-4 border-t border-white/10">
+                <button onclick="doLogout()" class="w-full flex items-center justify-center gap-2 bg-red-500/20 text-red-100 hover:bg-red-500 hover:text-white py-2 rounded-lg transition text-sm font-bold border border-red-500/30">
+                    <i class="fas fa-sign-out-alt"></i> লগআউট
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full relative overflow-hidden w-full">
+            <header class="bg-white shadow-sm h-16 flex items-center px-4 md:px-6 z-10 gap-4">
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-600 text-xl p-2 rounded hover:bg-gray-100 focus:outline-none"><i class="fas fa-bars"></i></button>
+                <h2 class="text-xl font-bold theme-text flex-1" id="page-title">ড্যাশবোর্ড</h2>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-gray-500 hidden md:block">অ্যাডমিন</span>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500"><i class="fas fa-user"></i></div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50 relative scroll-smooth">
+                
+                <div id="dashboard-section" class="space-y-6 pb-20">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
+                            <div><p class="text-gray-500 font-bold text-sm">মোট বিক্রি</p><h3 class="text-2xl md:text-3xl font-bold theme-text mt-1" id="total-sales">৳0</h3></div>
+                            <div class="w-12 h-12 bg-green-100 text-[#006D5B] rounded-full flex items-center justify-center text-xl"><i class="fas fa-coins"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
+                            <div><p class="text-gray-500 font-bold text-sm">মোট অর্ডার</p><h3 class="text-2xl md:text-3xl font-bold mt-1" id="total-orders">0</h3></div>
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-shopping-bag"></i></div>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center">
+                            <div><p class="text-gray-500 font-bold text-sm">মোট প্রোডাক্ট</p><h3 class="text-2xl md:text-3xl font-bold text-purple-600 mt-1" id="total-products-count">0</h3></div>
+                            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl"><i class="fas fa-box"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="orders-section" class="hidden space-y-4 pb-20">
+                    <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border flex flex-col md:flex-row gap-3">
+                        <input type="text" id="orderSearchInput" onkeyup="searchOrders()" placeholder="অর্ডার খুঁজুন (নাম/ফোন)..." class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-[#006D5B]">
+                        <button onclick="fetchOrders()" class="bg-gray-100 px-6 py-2.5 rounded-lg hover:bg-gray-200 font-medium whitespace-nowrap"><i class="fas fa-sync-alt mr-2"></i>রিফ্রেশ</button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left min-w-[600px]">
+                                <thead class="bg-gray-50 text-gray-500 text-xs uppercase border-b">
+                                    <tr>
+                                        <th class="p-4">তারিখ</th>
+                                        <th class="p-4">কাস্টমার</th>
+                                        <th class="p-4">অ্যাড্রেস</th>
+                                        <th class="p-4 text-right">টাকা</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="order-table-body" class="divide-y"></tbody>
+                            </table>
+                        </div>
+                        <div id="order-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div>
+                    </div>
+                </div>
+
+                <div id="products-section" class="hidden space-y-5 pb-24">
+                    <div class="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-xl shadow-sm border sticky top-0 z-10">
+                        <div class="flex-1">
+                            <input type="text" id="productSearchInput" onkeyup="searchProducts()" placeholder="পণ্যের নাম লিখুন..." class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-[#006D5B]">
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleSelectAll()" id="selectAllBtn" class="flex-1 md:flex-none px-4 py-2 border rounded-lg hover:bg-gray-100 text-sm font-medium whitespace-nowrap">সব সিলেক্ট</button>
+                            <button onclick="uploadProduct()" class="flex-1 md:flex-none theme-bg text-white px-5 py-2 rounded-lg font-bold text-sm shadow hover:opacity-90 whitespace-nowrap"><i class="fas fa-plus mr-1"></i> নতুন</button>
+                        </div>
+                    </div>
+
+                    <div id="product-loader" class="py-12 flex justify-center hidden"><div class="loader"></div></div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5" id="admin-product-list"></div>
+
+                    <div id="bulk-action-bar" class="fixed bottom-6 left-4 right-4 md:left-1/2 md:w-auto md:transform md:-translate-x-1/2 bg-gray-800 text-white px-4 py-3 rounded-full shadow-2xl z-40 flex justify-between md:justify-center items-center gap-4 md:gap-8 translate-y-32 transition-transform duration-300">
+                        <span class="font-bold text-sm ml-2"><span id="selected-count">0</span> সিলেক্টেড</span>
+                        <div class="flex gap-3 items-center">
+                            <button onclick="bulkDelete()" class="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-full font-bold text-sm shadow">ডিলিট</button>
+                            <button onclick="clearSelection()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 text-gray-400 hover:text-white transition"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
+        // === LOGIN CONFIGURATION ===
+        // আপনি চাইলে নিচের ইউজারনেম এবং পাসওয়ার্ড পরিবর্তন করতে পারেন
+        const ADMIN_CONFIG = {
+            username: "anikehasan", 
+            password: "01723965511" 
+        };
+        // ===========================
+
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwzAFmcBJZNoii1G7pQZ2lPFBRQ-vRgdm872Wx9ilAyv5Q6GitmG9XufQJl_zlmxCRb/exec';
         let allOrders = [], allProducts = [], selectedProductIds = new Set();
 
-        // --- Mobile Sidebar Logic ---
+        // Check Login Status on Load
+        function checkSession() {
+            const isLogged = sessionStorage.getItem('adminLogged');
+            if(isLogged === 'true') {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                loadAll();
+            }
+        }
+        checkSession();
+
+        function doLogin() {
+            const u = document.getElementById('admin_user').value;
+            const p = document.getElementById('admin_pass').value;
+
+            if(u === ADMIN_CONFIG.username && p === ADMIN_CONFIG.password) {
+                sessionStorage.setItem('adminLogged', 'true');
+                
+                const Toast = Swal.mixin({
+                    toast: true, position: 'top', showConfirmButton: false, timer: 2000,
+                    didOpen: (toast) => { toast.onmouseenter = Swal.stopTimer; toast.onmouseleave = Swal.resumeTimer; }
+                });
+                Toast.fire({ icon: 'success', title: 'লগইন সফল হয়েছে!' });
+
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+                loadAll();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ভুল তথ্য!',
+                    text: 'সঠিক ইউজারনেম এবং পাসওয়ার্ড দিন।',
+                    confirmButtonColor: '#006D5B'
+                });
+            }
+        }
+
+        function doLogout() {
+            Swal.fire({
+                title: 'লগআউট করবেন?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#006D5B',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'হ্যাঁ',
+                cancelButtonText: 'না'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sessionStorage.removeItem('adminLogged');
+                    window.location.reload();
+                }
+            })
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-overlay');
             const isClosed = sidebar.classList.contains('-translate-x-full');
-
             if (isClosed) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10); // Fade in
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
             } else {
                 sidebar.classList.add('-translate-x-full');
                 overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300); // Wait for fade out
+                setTimeout(() => overlay.classList.add('hidden'), 300);
             }
         }
 
         function showSection(id) {
-            // Close sidebar on mobile when link clicked
             if(window.innerWidth < 768) {
                 const sidebar = document.getElementById('sidebar');
                 if (!sidebar.classList.contains('-translate-x-full')) toggleSidebar();
             }
-
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
             document.querySelector(`[onclick="showSection('${id}')"]`)?.classList.add('active');
             ['dashboard', 'orders', 'products'].forEach(s => document.getElementById(s + '-section').classList.add('hidden'));
             document.getElementById(id + '-section').classList.remove('hidden');
-            
             const titles = {dashboard: 'ড্যাশবোর্ড', orders: 'অর্ডার লিস্ট', products: 'প্রোডাক্ট স্টক'};
             document.getElementById('page-title').innerText = titles[id];
             
-            if(id === 'dashboard') loadAll(); if(id === 'orders') fetchOrders(); if(id === 'products') fetchProducts();
+            // Only fetch if data is empty to save calls, or if specifically needed
+            if(id === 'orders' && allOrders.length === 0) fetchOrders(); 
+            if(id === 'products' && allProducts.length === 0) fetchProducts();
         }
 
         function loadAll() { fetchOrders(); fetchProducts(); }
 
-        // Orders Logic
         async function fetchOrders() {
             document.getElementById('order-loader').classList.remove('hidden');
             try { 
@@ -200,7 +292,6 @@
         }
         function searchOrders() { const q = document.getElementById('orderSearchInput').value.toLowerCase(); renderOrders(allOrders.filter(r => r[1].toLowerCase().includes(q) || r[2].toString().includes(q))); }
 
-        // Products Logic
         async function fetchProducts() {
             document.getElementById('product-loader').classList.remove('hidden'); clearSelection();
             try { const res = await fetch(scriptURL + '?action=getProducts'); allProducts = await res.json(); renderProducts(allProducts); updateStats(); } 
@@ -223,7 +314,7 @@
                         <h4 class="font-bold text-sm truncate text-gray-700 leading-tight">${x.name}</h4>
                         <div class="flex justify-between items-end mt-1">
                             <p class="theme-text font-bold text-sm">৳${x.price}</p>
-                            <span class="text-[10px] text-gray-400 uppercase bg-gray-100 px-1 rounded">${x.category}</span>
+                            <span class="text-[10px] text-gray-400 uppercase bg-gray-100 px-1 rounded">${x.category.replace('_', ' ')}</span>
                         </div>
                         <button onclick="event.stopPropagation(); editProduct(${x.id}, '${safeName}', '${safeCat}', ${x.price}, '${x.img}')" class="w-full mt-2 bg-blue-50 text-blue-600 py-1.5 text-xs font-bold rounded hover:bg-blue-100 transition">এডিট করুন</button>
                     </div>`;
@@ -231,7 +322,6 @@
             updateBar();
         }
 
-        // Product Upload & Edit (No changes in logic, just styling in SWAL)
         const swalConfig = { confirmButtonColor: '#006D5B', cancelButtonColor: '#EF4444' };
         
         function uploadProduct() {
@@ -241,7 +331,11 @@
                     <div class="space-y-3 text-left mt-2">
                         <div><label class="text-xs font-bold text-gray-500">নাম</label><input id="p_name" class="swal-input w-full border p-2.5 rounded-lg focus:outline-none focus:border-[#006D5B]" placeholder="পণ্যের নাম"></div>
                         <div><label class="text-xs font-bold text-gray-500">ক্যাটাগরি</label>
-                            <select id="p_cat" class="w-full border p-2.5 rounded-lg focus:outline-none bg-white"><option value="cosmetics">Cosmetics</option><option value="supplements">Supplements</option><option value="food">Food</option><option value="skincare">Skincare</option></select>
+                            <select id="p_cat" class="w-full border p-2.5 rounded-lg focus:outline-none bg-white">
+                                <option value="beauty_products">Beauty Products</option>
+                                <option value="food_supplements">Food Supplements</option>
+                                <option value="others">Others</option>
+                            </select>
                         </div>
                         <div><label class="text-xs font-bold text-gray-500">দাম</label><input id="p_price" type="number" class="w-full border p-2.5 rounded-lg focus:outline-none" placeholder="0.00"></div>
                         <div><label class="text-xs font-bold text-gray-500">ছবির লিংক</label><input id="p_img" class="w-full border p-2.5 rounded-lg focus:outline-none" placeholder="https://..."></div>
@@ -263,10 +357,9 @@
                         <div><label class="text-xs font-bold text-gray-500">নাম</label><input id="e_name" class="w-full border p-2.5 rounded-lg focus:outline-none focus:border-[#006D5B]" value="${n}"></div>
                         <div><label class="text-xs font-bold text-gray-500">ক্যাটাগরি</label>
                             <select id="e_cat" class="w-full border p-2.5 rounded-lg focus:outline-none bg-white">
-                                <option value="cosmetics" ${c=='cosmetics'?'selected':''}>Cosmetics</option>
-                                <option value="supplements" ${c=='supplements'?'selected':''}>Supplements</option>
-                                <option value="food" ${c=='food'?'selected':''}>Food</option>
-                                <option value="skincare" ${c=='skincare'?'selected':''}>Skincare</option>
+                                <option value="beauty_products" ${c=='beauty_products'?'selected':''}>Beauty Products</option>
+                                <option value="food_supplements" ${c=='food_supplements'?'selected':''}>Food Supplements</option>
+                                <option value="others" ${c=='others'?'selected':''}>Others</option>
                             </select>
                         </div>
                         <div><label class="text-xs font-bold text-gray-500">দাম</label><input id="e_price" type="number" class="w-full border p-2.5 rounded-lg focus:outline-none" value="${p}"></div>
@@ -277,7 +370,6 @@
             }).then(r => { if(r.isConfirmed) post(r.value, 'আপডেট সম্পন্ন হয়েছে!'); });
         }
 
-        // Helpers
         function toggle(id) { const s = id.toString(); selectedProductIds.has(s) ? selectedProductIds.delete(s) : selectedProductIds.add(s); renderProducts(allProducts); }
         function toggleSelectAll() { selectedProductIds.size === allProducts.length ? clearSelection() : allProducts.forEach(p => selectedProductIds.add(p.id.toString())); renderProducts(allProducts); }
         function clearSelection() { selectedProductIds.clear(); renderProducts(allProducts); }
@@ -308,8 +400,6 @@
             let t=0; allOrders.forEach(r=>t+=parseInt(r[5])||0); 
             document.getElementById('total-sales').innerText = '৳'+t.toLocaleString(); 
         }
-        
-        loadAll();
     </script>
 </body>
 </html>
